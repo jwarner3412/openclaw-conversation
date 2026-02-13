@@ -6,8 +6,8 @@ import logging
 
 from homeassistant.components.conversation import async_set_agent, async_unset_agent
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.helpers import config_validation as cv
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import config_validation as cv
 
 from .const import DOMAIN
 from .conversation import OpenClawConversationAgent
