@@ -54,7 +54,7 @@ class OpenClawConversationAgent(conversation.AbstractConversationAgent):
     ) -> conversation.ConversationResult:
         """Process a sentence."""
         # Use persistent conversation ID if configured, otherwise use HA's ID
-        persistent_id = self.entry.options.get(CONF_PERSISTENT_CONVERSATION_ID, "").strip()
+        persistent_id = self.entry.options.get(CONF_PERSISTENT_CONVERSATION_ID, "").strip() or self.entry.data.get(CONF_PERSISTENT_CONVERSATION_ID, "").strip()
         conversation_id = persistent_id or user_input.conversation_id or ulid.ulid_now()
 
         # Get or create conversation history
@@ -96,6 +96,7 @@ class OpenClawConversationAgent(conversation.AbstractConversationAgent):
         payload = {
             "model": self._model,
             "messages": messages,
+            "user": conversation_id,
         }
 
         timeout = aiohttp.ClientTimeout(total=self._timeout)
