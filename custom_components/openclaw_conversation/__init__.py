@@ -11,7 +11,6 @@ from homeassistant.helpers import config_validation as cv
 
 from .const import DOMAIN
 from .conversation import OpenClawConversationAgent
-from .config_flow import OpenClawConversationOptionsFlow
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -25,17 +24,15 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up OpenClaw Conversation from a config entry."""
-    hass.config_entries.async_setup_platforms(entry, [])
-    entry.async_on_unload(entry.add_update_listener(async_update_options))
-
     agent = OpenClawConversationAgent(hass, entry)
     async_set_agent(hass, entry, agent)
+    entry.async_on_unload(entry.add_update_listener(_async_update_options))
     _LOGGER.info("OpenClaw Conversation agent registered")
     return True
 
 
-async def async_update_options(hass: HomeAssistant, entry: ConfigEntry) -> None:
-    """Update options."""
+async def _async_update_options(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Handle options update."""
     await hass.config_entries.async_reload(entry.entry_id)
 
 
