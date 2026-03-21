@@ -26,7 +26,8 @@
         "description": "Configure persistent conversation for voice sessions. When set, all voice commands share the same conversation context instead of starting fresh each time.",
         "data": {
           "persistent_conversation_id": "Persistent Conversation ID (optional)",
-          "max_conversation_messages": "Max conversation messages (default 50)"
+          "max_conversation_messages": "Max conversation messages (default 50)",
+          "timeout": "Timeout (seconds, default 30)"
         }
       }
     }

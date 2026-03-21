@@ -134,6 +134,12 @@ class OpenClawConversationOptionsFlow(
                             "max_conversation_messages", "50"
                         ),
                     ): vol.Coerce(int),
+                    vol.Optional(
+                        CONF_TIMEOUT,
+                        default=self.config_entry.options.get(
+                            CONF_TIMEOUT, self.config_entry.data.get(CONF_TIMEOUT, 30)
+                        ),
+                    ): vol.Coerce(int),
                 }
             ),
         )

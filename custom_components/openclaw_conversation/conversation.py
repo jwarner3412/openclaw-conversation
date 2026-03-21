@@ -99,7 +99,8 @@ class OpenClawConversationAgent(conversation.AbstractConversationAgent):
             "user": conversation_id,
         }
 
-        timeout = aiohttp.ClientTimeout(total=self._timeout)
+        timeout_sec = int(self.entry.options.get(CONF_TIMEOUT, self._timeout))
+        timeout = aiohttp.ClientTimeout(total=timeout_sec)
 
         async with aiohttp.ClientSession(timeout=timeout) as session:
             async with session.post(
