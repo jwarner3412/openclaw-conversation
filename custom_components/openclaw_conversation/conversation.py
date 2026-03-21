@@ -65,7 +65,7 @@ class OpenClawConversationAgent(conversation.AbstractConversationAgent):
 
         # Call OpenClaw
         try:
-            response_text = await self._call_openclaw(messages)
+            response_text = await self._call_openclaw(messages, conversation_id)
         except Exception as err:
             _LOGGER.error("Error calling OpenClaw: %s", err)
             response_text = "Erreur de communication avec OpenClaw."
@@ -86,7 +86,7 @@ class OpenClawConversationAgent(conversation.AbstractConversationAgent):
             conversation_id=conversation_id,
         )
 
-    async def _call_openclaw(self, messages: list[dict]) -> str:
+    async def _call_openclaw(self, messages: list[dict], conversation_id: str) -> str:
         """Call OpenClaw chat completions API."""
         headers = {
             "Authorization": f"Bearer {self._api_key}",
