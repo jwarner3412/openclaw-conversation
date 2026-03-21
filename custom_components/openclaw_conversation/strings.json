@@ -23,11 +23,13 @@
     "step": {
       "init": {
         "title": "OpenClaw Options",
-        "description": "Configure persistent conversation for voice sessions. When set, all voice commands share the same conversation context instead of starting fresh each time.",
+        "description": "Configure persistent conversation for voice sessions. When set, all voice commands share the same conversation context instead of starting fresh each time. You can also auto-reset history after inactivity and require confirmation for risky commands.",
         "data": {
           "persistent_conversation_id": "Persistent Conversation ID (optional)",
           "max_conversation_messages": "Max conversation messages (default 50)",
-          "timeout": "Timeout (seconds, default 30)"
+          "timeout": "Timeout (seconds, default 30)",
+          "inactivity_reset_minutes": "Reset history after this many minutes of inactivity (0 disables, default 30)",
+          "risky_confirmation_enabled": "Require confirmation for risky actions"
         }
       }
     }

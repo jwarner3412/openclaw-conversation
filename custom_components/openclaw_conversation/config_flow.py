@@ -11,11 +11,16 @@ from homeassistant.const import CONF_NAME
 from .const import (
     CONF_API_KEY,
     CONF_BASE_URL,
+    CONF_INACTIVITY_RESET_MINUTES,
     CONF_MODEL,
     CONF_PERSISTENT_CONVERSATION_ID,
+    CONF_RISKY_CONFIRMATION_ENABLED,
     CONF_TIMEOUT,
     DEFAULT_BASE_URL,
+    DEFAULT_INACTIVITY_RESET_MINUTES,
+    DEFAULT_MAX_CONVERSATION_MESSAGES,
     DEFAULT_MODEL,
+    DEFAULT_RISKY_CONFIRMATION_ENABLED,
     DEFAULT_TIMEOUT,
     DOMAIN,
 )
@@ -131,15 +136,31 @@ class OpenClawConversationOptionsFlow(
                     vol.Optional(
                         "max_conversation_messages",
                         default=self.config_entry.options.get(
-                            "max_conversation_messages", "50"
+                            "max_conversation_messages",
+                            DEFAULT_MAX_CONVERSATION_MESSAGES,
                         ),
                     ): vol.Coerce(int),
                     vol.Optional(
                         CONF_TIMEOUT,
                         default=self.config_entry.options.get(
-                            CONF_TIMEOUT, self.config_entry.data.get(CONF_TIMEOUT, 30)
+                            CONF_TIMEOUT,
+                            self.config_entry.data.get(CONF_TIMEOUT, DEFAULT_TIMEOUT),
                         ),
                     ): vol.Coerce(int),
+                    vol.Optional(
+                        CONF_INACTIVITY_RESET_MINUTES,
+                        default=self.config_entry.options.get(
+                            CONF_INACTIVITY_RESET_MINUTES,
+                            DEFAULT_INACTIVITY_RESET_MINUTES,
+                        ),
+                    ): vol.Coerce(int),
+                    vol.Optional(
+                        CONF_RISKY_CONFIRMATION_ENABLED,
+                        default=self.config_entry.options.get(
+                            CONF_RISKY_CONFIRMATION_ENABLED,
+                            DEFAULT_RISKY_CONFIRMATION_ENABLED,
+                        ),
+                    ): vol.Boolean(),
                 }
             ),
         )

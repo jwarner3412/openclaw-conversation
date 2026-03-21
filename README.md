@@ -10,6 +10,10 @@ Fork of [nicolasglg/openclaw-conversation](https://github.com/nicolasglg/opencla
 - This solves the issue where each voice command was a new session with zero memory of previous turns
 - When empty/not set, falls back to default HA behavior (per-turn IDs)
 
+### Additional Options
+- **Inactivity Reset Minutes** (default 30): If a conversation stays idle longer than this setting, the stored context resets before the next turn. Set to `0` to disable the guardrail.
+- **Risky Confirmation** (enabled by default): Commands that mention unlocking/disarming doors or garage/front security trigger a confirmation prompt before the request is forwarded. Confirm with `confirm`/`yes confirm` or cancel with `cancel`/`no`.
+
 ### How to Use
 1. Install via HACS (custom repository) or manually copy `custom_components/openclaw_conversation` to your HA `config/custom_components/`
 2. Restart Home Assistant
