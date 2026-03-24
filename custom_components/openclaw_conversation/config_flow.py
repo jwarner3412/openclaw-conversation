@@ -11,11 +11,13 @@ from homeassistant.const import CONF_NAME
 from .const import (
     CONF_API_KEY,
     CONF_BASE_URL,
+    CONF_AGENT_ID,
     CONF_INACTIVITY_RESET_MINUTES,
     CONF_MODEL,
     CONF_PERSISTENT_CONVERSATION_ID,
     CONF_RISKY_CONFIRMATION_ENABLED,
     CONF_TIMEOUT,
+    DEFAULT_AGENT_ID,
     DEFAULT_BASE_URL,
     DEFAULT_INACTIVITY_RESET_MINUTES,
     DEFAULT_MAX_CONVERSATION_MESSAGES,
@@ -84,6 +86,9 @@ class OpenClawConversationConfigFlow(
                         CONF_MODEL: user_input.get(
                             CONF_MODEL, DEFAULT_MODEL
                         ),
+                        CONF_AGENT_ID: user_input.get(
+                            CONF_AGENT_ID, DEFAULT_AGENT_ID
+                        ),
                         CONF_TIMEOUT: user_input.get(
                             CONF_TIMEOUT, DEFAULT_TIMEOUT
                         ),
@@ -103,6 +108,9 @@ class OpenClawConversationConfigFlow(
                     vol.Required(CONF_API_KEY): str,
                     vol.Optional(
                         CONF_MODEL, default=DEFAULT_MODEL
+                    ): str,
+                    vol.Optional(
+                        CONF_AGENT_ID, default=DEFAULT_AGENT_ID
                     ): str,
                     vol.Optional(
                         CONF_TIMEOUT, default=DEFAULT_TIMEOUT
@@ -140,6 +148,15 @@ class OpenClawConversationOptionsFlow(
                             DEFAULT_MAX_CONVERSATION_MESSAGES,
                         ),
                     ): vol.Coerce(int),
+                    vol.Optional(
+                        CONF_AGENT_ID,
+                        default=self.config_entry.options.get(
+                            CONF_AGENT_ID,
+                            self.config_entry.data.get(
+                                CONF_AGENT_ID, DEFAULT_AGENT_ID
+                            ),
+                        ),
+                    ): str,
                     vol.Optional(
                         CONF_TIMEOUT,
                         default=self.config_entry.options.get(

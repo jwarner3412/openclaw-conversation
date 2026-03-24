@@ -17,11 +17,13 @@ from homeassistant.util import ulid
 from .const import (
     CONF_API_KEY,
     CONF_BASE_URL,
+    CONF_AGENT_ID,
     CONF_INACTIVITY_RESET_MINUTES,
     CONF_MODEL,
     CONF_PERSISTENT_CONVERSATION_ID,
     CONF_RISKY_CONFIRMATION_ENABLED,
     CONF_TIMEOUT,
+    DEFAULT_AGENT_ID,
     DEFAULT_INACTIVITY_RESET_MINUTES,
     DEFAULT_MAX_CONVERSATION_MESSAGES,
     DEFAULT_MODEL,
@@ -54,6 +56,13 @@ class OpenClawConversationAgent(conversation.AbstractConversationAgent):
         self._api_key = entry.data[CONF_API_KEY]
         self._model = entry.data.get(CONF_MODEL, DEFAULT_MODEL)
         self._timeout = entry.data.get(CONF_TIMEOUT, DEFAULT_TIMEOUT)
+        self._agent_id = (
+            entry.options.get(
+                CONF_AGENT_ID,
+                entry.data.get(CONF_AGENT_ID, DEFAULT_AGENT_ID),
+            ).strip()
+            or DEFAULT_AGENT_ID
+        )
         self._conversations: dict[str, list[dict]] = {}
         self._pending_risky_requests: dict[str, str] = {}
         self._last_activity: dict[str, float] = {}
@@ -164,10 +173,12 @@ class OpenClawConversationAgent(conversation.AbstractConversationAgent):
             "Content-Type": "application/json",
         }
 
+        session_user = f"{self._agent_id}:{conversation_id}"
         payload = {
             "model": self._model,
             "messages": messages,
-            "user": conversation_id,
+            "user": session_user,
+            "agentId": self._agent_id,
         }
 
         timeout_sec = int(self.entry.options.get(CONF_TIMEOUT, self._timeout))
