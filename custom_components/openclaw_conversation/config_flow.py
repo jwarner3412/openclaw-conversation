@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import aiohttp
 import voluptuous as vol
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 from homeassistant import config_entries
 from homeassistant.const import CONF_NAME
@@ -28,6 +29,24 @@ from .const import (
 )
 
 
+def _build_chat_completions_url(base_url: str, agent_id: str) -> str:
+    """Build the chat completions endpoint URL with optional agent routing."""
+    split = urlsplit(f"{base_url}/v1/chat/completions")
+    query_items = dict(parse_qsl(split.query, keep_blank_values=True))
+    if agent_id:
+        query_items["agentId"] = agent_id
+
+    return urlunsplit(
+        (
+            split.scheme,
+            split.netloc,
+            split.path,
+            urlencode(query_items),
+            split.fragment,
+        )
+    )
+
+
 class OpenClawConversationConfigFlow(
     config_entries.ConfigFlow, domain=DOMAIN
 ):
@@ -47,6 +66,7 @@ class OpenClawConversationConfigFlow(
         if user_input is not None:
             base_url = user_input[CONF_BASE_URL].rstrip("/")
             api_key = user_input[CONF_API_KEY]
+            agent_id = (user_input.get(CONF_AGENT_ID, DEFAULT_AGENT_ID) or "").strip()
 
             # Test connection
             try:
@@ -54,15 +74,17 @@ class OpenClawConversationConfigFlow(
                     headers = {
                         "Authorization": f"Bearer {api_key}",
                         "Content-Type": "application/json",
+                        "x-openclaw-agent": agent_id,
                     }
                     payload = {
                         "model": user_input.get(CONF_MODEL, DEFAULT_MODEL),
                         "messages": [
                             {"role": "user", "content": "ping"}
                         ],
+                        "agentId": agent_id,
                     }
                     async with session.post(
-                        f"{base_url}/v1/chat/completions",
+                        _build_chat_completions_url(base_url, agent_id),
                         json=payload,
                         headers=headers,
                         timeout=aiohttp.ClientTimeout(total=15),

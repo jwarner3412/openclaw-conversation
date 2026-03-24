@@ -5,6 +5,7 @@ from __future__ import annotations
 import logging
 import time
 from typing import Literal
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 import aiohttp
 
@@ -171,6 +172,7 @@ class OpenClawConversationAgent(conversation.AbstractConversationAgent):
         headers = {
             "Authorization": f"Bearer {self._api_key}",
             "Content-Type": "application/json",
+            "x-openclaw-agent": self._agent_id,
         }
 
         session_user = f"{self._agent_id}:{conversation_id}"
@@ -183,13 +185,10 @@ class OpenClawConversationAgent(conversation.AbstractConversationAgent):
 
         timeout_sec = int(self.entry.options.get(CONF_TIMEOUT, self._timeout))
         timeout = aiohttp.ClientTimeout(total=timeout_sec)
+        url = self._build_chat_completions_url(self._agent_id)
 
         async with aiohttp.ClientSession(timeout=timeout) as session:
-            async with session.post(
-                f"{self._base_url}/v1/chat/completions",
-                json=payload,
-                headers=headers,
-            ) as resp:
+            async with session.post(url, json=payload, headers=headers) as resp:
                 if resp.status != 200:
                     body = await resp.text()
                     raise RuntimeError(
@@ -202,6 +201,23 @@ class OpenClawConversationAgent(conversation.AbstractConversationAgent):
                     raise RuntimeError("No response from OpenClaw")
 
                 return choices[0]["message"]["content"]
+
+    def _build_chat_completions_url(self, agent_id: str) -> str:
+        """Build the chat completions endpoint URL with optional agent routing."""
+        split = urlsplit(f"{self._base_url}/v1/chat/completions")
+        query_items = dict(parse_qsl(split.query, keep_blank_values=True))
+        if agent_id:
+            query_items["agentId"] = agent_id
+
+        return urlunsplit(
+            (
+                split.scheme,
+                split.netloc,
+                split.path,
+                urlencode(query_items),
+                split.fragment,
+            )
+        )
 
     def _build_response(
         self, text: str, language: str, conversation_id: str
