@@ -29,7 +29,8 @@
           "max_conversation_messages": "Max conversation messages (default 50)",
           "timeout": "Timeout (seconds, default 30)",
           "inactivity_reset_minutes": "Reset history after this many minutes of inactivity (0 disables, default 30)",
-          "risky_confirmation_enabled": "Require confirmation for risky actions"
+          "risky_confirmation_enabled": "Require confirmation for risky actions",
+          "agent_id": "Agent ID (default: main)"
         }
       }
     }
