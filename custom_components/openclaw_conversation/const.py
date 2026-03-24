@@ -6,7 +6,9 @@ CONF_BASE_URL = "base_url"
 CONF_API_KEY = "api_key"
 CONF_MODEL = "model"
 CONF_TIMEOUT = "timeout"
+CONF_AGENT_ID = "agent_id"
 
 DEFAULT_MODEL = "openclaw"
 DEFAULT_TIMEOUT = 30
 DEFAULT_BASE_URL = "http://127.0.0.1:18789"
+DEFAULT_AGENT_ID = "main"
