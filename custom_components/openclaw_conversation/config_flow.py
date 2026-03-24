@@ -7,6 +7,7 @@ import voluptuous as vol
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 from homeassistant import config_entries
+from homeassistant.helpers import config_validation as cv
 from homeassistant.const import CONF_NAME
 
 from .const import (
@@ -199,7 +200,7 @@ class OpenClawConversationOptionsFlow(
                             CONF_RISKY_CONFIRMATION_ENABLED,
                             DEFAULT_RISKY_CONFIRMATION_ENABLED,
                         ),
-                    ): vol.Boolean(),
+                    ): cv.boolean,
                 }
             ),
         )
